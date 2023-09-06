@@ -1,4 +1,4 @@
-__author__ = "Kumar E10725 (PMC Chiayi)"
+__author__ = "Nexus1203"
 
 # Echo client program
 import array
