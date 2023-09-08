@@ -9,7 +9,7 @@ import struct
 import numpy as np
 from collections import OrderedDict
 from time import perf_counter as pf
-from motocom.udpPacket import UdpPacket, UdpPacket_Req, UdpPacket_Ans, axisTorque, axisPosition, UdpPacket_StrAns
+from .udpPacket import UdpPacket, UdpPacket_Req, UdpPacket_Ans, axisTorque, axisPosition, UdpPacket_StrAns
 
 
 #sws
