@@ -400,15 +400,15 @@ class FastEthServer:
             'padding': (0, 0)
         }
 
-        if (types == 0):
+        if (types == "B" or types == "IO"):
             reqData = [value]
-        elif (types == 1):
+        elif (types == 'I'):
             tc = two_comp(value, 16)  #two's complement
             bytes = divmod(
                 tc, 0x100
             )  #vrne [celi_del, ostanek]   --->   [bytes / 2^8, bytes % 2^8]
             reqData = [bytes[1], bytes[0]]
-        elif (types == 2):
+        elif (types == "D"):
             tc = two_comp(value, 32)  #two's complement
             bytes = divmod(
                 tc, 0x10000
@@ -432,8 +432,13 @@ class FastEthServer:
             "I": 0x7B,  #Ivar
             "D": 0x7C,  #Dvar
             "R": 0x7D,  #Rvar
-            "IO": 0x78  #IOvar
+            "IN": 0x78  #IOvar
         }
+
+        if types == "IN":
+            bk_index = index
+            index = (index / 8) + 1
+            index = int(index)
 
         reqSubHeader = {
             'cmdNo': (commNo[types], 0x00),  #cmd Nr
@@ -450,13 +455,25 @@ class FastEthServer:
         if (ansPacket == None or ansPacket.status != 0):
             return False
 
-        if (types == 0):  #B var
+        if (types == "B"):  #B var
             #B var - unsigned data
             return (ansPacket.data[0])
-        elif (types == 1):  #I var
+        elif (types == "IN"):  #IO var for input
+            res = (ansPacket.data[0])
+            # convert to binary
+            res = bin(res)[2:].zfill(8)
+            to_list = list(res)
+            # to list of int
+            to_list = [int(i) for i in to_list]
+            # reverse list
+            to_list.reverse()
+            selected = to_list[(bk_index % 8) - 1]
+            return selected
+
+        elif (types == "I"):  #I var
             #convert received data (2 bytes) to signed integer
             return toSint(ansPacket.data[1] * (1 << 8) + ansPacket.data[0], 16)
-        elif (types == 2):  #D var
+        elif (types == "D"):  #D var
             #convert received data (4 bytes) to signed integer
             wordLow = ansPacket.data[1] * (1 << 8) + ansPacket.data[0]
             wordHigh = ansPacket.data[3] * (1 << 8) + ansPacket.data[2]
