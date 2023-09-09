@@ -380,7 +380,7 @@ class FastEthServer:
     #Read/Write vars (B, I, D)
     def writeVar(self, types, index, value):
         """
-        types = "B", "I", "D", "R", "IO"
+        types = "B", "I", "D", "R", "IO" 
         index = variable index
         value = value to write to the variable
         """
@@ -423,8 +423,9 @@ class FastEthServer:
 
     def readVar(self, types, index):
         """
-        types = "B", "I", "D", "R", "IO"
-        index = variable index. for IO input index = 1 to 512, for IO output index = 1001 to 1512
+        types = "B", "I", "D", "R", "IN"
+        "IN" will read the user intput or other inputs on the controller.
+        index = variable index. for IO (IN) input index = 1 to 512
         """
 
         commNo = {
